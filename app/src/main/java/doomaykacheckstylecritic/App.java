@@ -28,7 +28,7 @@ public class App {
 			} else {
 				cr = new ConfigReader();
 			}
-		}else {
+		} else {
 			cr = new ConfigReader();
 		}
 
@@ -41,8 +41,11 @@ public class App {
 		List<String> warningMessages = cr.getWarningMessages(); // warningMessages to check ++
 		List<String> refactorMessages = cr.getRefactorMessages(); // refactorMessages to check ++
 		List<String> conventionMessages = cr.getConventionMessages(); // convertationMessages to check ++
-		int[] multipliers = cr.getMultipliers(); // errorsMultipliers++
-		int[] counterVal = cr.getCounter(); // ++ errorsCount
+
+		int errorMultiplier = cr.getErrorMultiplier();
+		int warningMultiplier = cr.getWarningMultiplier();
+		int refactorMultiplier = cr.getRefactorMultiplier();
+		int conventionMultiplier = cr.getConventionMultiplier();
 
 		String[] messages = cr.getMessages(); // messages to print++
 
@@ -50,7 +53,7 @@ public class App {
 
 		csp = new CheckStyleParser();
 
-		if ((XMLpath == null) && (XMLname != null)) {
+		if ((XMLname != null)) {
 			csp = new CheckStyleParser(XMLname);
 		}
 
@@ -61,11 +64,13 @@ public class App {
 		csp.readXML();
 		CheckStyleModel model = csp.getXmlUnparsed();
 
-		CodeCounter counter = new CodeCounter(model);
-
-		if (multipliers != null) {
-			counter = new CodeCounter(model, multipliers);
-		}
+		CodeCounter counter = new CodeCounter(
+			model,
+			errorMultiplier,
+			warningMultiplier,
+			refactorMultiplier,
+			conventionMultiplier
+		);
 
 		if (errorMessages != null) {
 			counter.setErrorMessages(errorMessages);
@@ -86,17 +91,16 @@ public class App {
 		float rating = 0;
 		rating = counter.calculate();
 
-		MessageGenerator mGenerator = new MessageGenerator(rating, counter.getLinesPrepared(), counter.getMultipliers(),
-				counter.getCounter());
-		if (messages != null) {
-			new MessageGenerator(messages, rating, counter.getLinesPrepared(), counter.getMultipliers(),
-					counter.getCounter());
-		}
-
-		if ((messages != null) && (counterVal != null)) {
-			new MessageGenerator(messages, rating, counter.getLinesPrepared(), counter.getMultipliers(), counterVal);
-		}
-
+		MessageGenerator mGenerator = new MessageGenerator(
+			rating, 
+			counter.getLinesPrepared(), 
+			errorMultiplier,
+			warningMultiplier,
+			refactorMultiplier,
+			conventionMultiplier,
+			counter.getCounter(),
+			messages
+		);
 		mGenerator.printMessages();
 	}
 }

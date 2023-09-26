@@ -21,14 +21,18 @@ public class CheckStyleParser {
 	private List<String> rootFilesPathStrings;
 
 	private String XMLString = "";
-	
+
 	private CheckStyleModel data = null;
 
 	public CheckStyleParser() {
 		try {
 			String separator = "";
 
-			checkRootPath = this.getClass().getProtectionDomain().getCodeSource().getLocation().toURI().toString();
+			checkRootPath = this.getClass().
+					getProtectionDomain().
+					getCodeSource().
+					getLocation().
+					toURI().toString();
 			int dirSlashIdx = 0;
 			dirSlashIdx = checkRootPath.lastIndexOf("/");
 			if (dirSlashIdx != -1) {
@@ -78,7 +82,7 @@ public class CheckStyleParser {
 		}
 
 		readXMLFile(XMLpath);
-		
+
 		parseXMLFile(XMLString);
 	}
 
@@ -107,11 +111,11 @@ public class CheckStyleParser {
 	}
 
 	private void readXMLFile(String filePath) {
-		if(!filePath.equals("")) {
+		if (!filePath.equals("")) {
 			Scanner scanner;
 			try {
 				scanner = new Scanner(new File(filePath));
-				
+
 				scanner.useDelimiter(System.getProperty("line.separator"));
 				while (scanner.hasNext()) {
 					XMLString += scanner.next();
@@ -122,25 +126,28 @@ public class CheckStyleParser {
 			}
 		}
 	}
-	
+
 	private void parseXMLFile(String xmlString) {
-		if(!xmlString.equals("")) {
+		if (!xmlString.equals("")) {
 			Reader fis = new StringReader(xmlString);
-			
+
 			JAXBContext context;
 			try {
-				context = org.eclipse.persistence.jaxb.JAXBContextFactory
-						.createContext(new Class[] { CheckStyleModel.class }, null);
-				
+				context = org.eclipse.persistence.jaxb.JAXBContextFactory.createContext(
+					new Class[] { CheckStyleModel.class },
+					null
+				);
+
 				Unmarshaller unmarshaller = context.createUnmarshaller();
-				CheckStyleModel checkStyleReport = (CheckStyleModel) unmarshaller.unmarshal(fis);
+				CheckStyleModel checkStyleReport = (CheckStyleModel) 
+													unmarshaller.unmarshal(fis);
 				this.data = checkStyleReport;
 			} catch (JAXBException e) {
 				System.out.println("XML file not parsed");
 			}
 		}
 	}
-	
+
 	public CheckStyleModel getXmlUnparsed() {
 		return this.data;
 	}

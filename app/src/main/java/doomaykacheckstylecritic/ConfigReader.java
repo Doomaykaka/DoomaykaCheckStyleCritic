@@ -1,16 +1,28 @@
 package doomaykacheckstylecritic;
 
+import java.awt.geom.IllegalPathStateException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.StringReader;
+import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import java.util.Scanner;
 
 public class ConfigReader {
+	public final static String PROPERTIE_NAME_ERROR_MULTIPLIER = "error-multiplier";
+	public final static String PROPERTIE_NAME_WARNING_MULTIPLIER = "warning-multiplier";
+	public final static String PROPERTIE_NAME_REFACTOR_MULTIPLIER = "refactor-multiplier";
+	public final static String PROPERTIE_NAME_CONVENTION_MULTIPLIER = "convention-multiplier";
+
 	private String path;
 
 	private String XMLpath;
@@ -20,15 +32,22 @@ public class ConfigReader {
 	private List<String> warningMessages;
 	private List<String> refactorMessages;
 	private List<String> conventionMessages;
-	private int[] multipliers;
-	private int[] counter;
+	private int errorMultiplier;
+	private int warningMultiplier;
+	private int refactorMultiplier;
+	private int conventionMultiplier;
 
 	private String[] messages;
 
 	public ConfigReader() {
 		try {
 			String separator = "";
-			path = this.getClass().getProtectionDomain().getCodeSource().getLocation().toURI().toString();
+			path = this.getClass().
+					getProtectionDomain().
+					getCodeSource().
+					getLocation().
+					toURI().
+					toString();
 
 			int dirSlashIdx = 0;
 			dirSlashIdx = path.lastIndexOf("/");
@@ -62,14 +81,13 @@ public class ConfigReader {
 		Properties prop = new Properties();
 
 		if (!path.equals("")) {
-			Scanner scanner;
 			try {
-				scanner = new Scanner(new File(path));
-				while (scanner.hasNextLine()) {
-					String line = scanner.nextLine();
+				Path filePath = Paths.get(path);
+				//List<String> lines = Files.readAllLines(filePath, StandardCharsets.UTF_8);
+				List<String> lines = Files.readAllLines(filePath);
+				for(String line:lines) {
 					prop.load(new StringReader(line));
 				}
-				scanner.close();
 			} catch (FileNotFoundException e) {
 				System.out.println("Config file not parsed");
 			} catch (IOException e) {
@@ -112,32 +130,11 @@ public class ConfigReader {
 				conventionMessages = Arrays.asList(conventionMessagesInline.split(";"));
 			}
 		}
-
-		if (prop.getProperty("multipliers") != null) {
-			String multipliersInline = prop.getProperty("multipliers");
-			if (multipliersInline.split(";") != null) {
-				String[] multStr = multipliersInline.split(";");
-				int[] multInt = new int[multStr.length];
-				for (int i = 0; i < multStr.length; i++) {
-					multInt[i] = Integer.parseInt(multStr[i]);
-				}
-
-				multipliers = multInt;
-			}
-		}
-
-		if (prop.getProperty("counters") != null) {
-			String countersInline = prop.getProperty("counters");
-			if (countersInline.split(";") != null) {
-				String[] countStr = countersInline.split(";");
-				int[] countInt = new int[countStr.length];
-				for (int i = 0; i < countInt.length; i++) {
-					countInt[i] = Integer.parseInt(countStr[i]);
-				}
-
-				counter = countInt;
-			}
-		}
+		
+		this.errorMultiplier = getIntProperty(prop, ConfigReader.PROPERTIE_NAME_ERROR_MULTIPLIER, 1);
+		this.warningMultiplier = getIntProperty(prop, ConfigReader.PROPERTIE_NAME_WARNING_MULTIPLIER, 1);
+		this.refactorMultiplier = getIntProperty(prop, ConfigReader.PROPERTIE_NAME_REFACTOR_MULTIPLIER, 1);
+		this.conventionMultiplier = getIntProperty(prop, ConfigReader.PROPERTIE_NAME_CONVENTION_MULTIPLIER, 1);
 
 		if (prop.getProperty("messages") != null) {
 			String messagesInline = prop.getProperty("messages");
@@ -145,6 +142,11 @@ public class ConfigReader {
 				messages = messagesInline.split(";");
 			}
 		}
+	}
+	
+	private int getIntProperty(Properties prop, String propertyName, int defaultValue) {
+		String propertyValue = prop.getProperty(propertyName);
+		return propertyValue == null ? defaultValue : Integer.parseInt(propertyValue);
 	}
 
 	public String getXMLpath() {
@@ -163,14 +165,6 @@ public class ConfigReader {
 		return conventionMessages;
 	}
 
-	public int[] getMultipliers() {
-		return multipliers;
-	}
-
-	public int[] getCounter() {
-		return counter;
-	}
-
 	public List<String> getErrorMessages() {
 		return errorMessages;
 	}
@@ -181,5 +175,18 @@ public class ConfigReader {
 
 	public String[] getMessages() {
 		return messages;
+	}
+
+	public int getErrorMultiplier() {
+		return errorMultiplier;
+	}
+	public int getWarningMultiplier() {
+		return warningMultiplier;
+	}
+	public int getRefactorMultiplier() {
+		return refactorMultiplier;
+	}
+	public int getConventionMultiplier() {
+		return conventionMultiplier;
 	}
 }

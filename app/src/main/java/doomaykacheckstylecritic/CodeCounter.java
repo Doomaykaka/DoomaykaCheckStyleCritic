@@ -12,47 +12,51 @@ public class CodeCounter {
 	private List<String> warningMessages;
 	private List<String> refactorMessages;
 	private List<String> conventionMessages;
-	private int[] multipliers;
+	private int errorMultiplier;
+	private int warningMultiplier;
+	private int refactorMultiplier;
+	private int conventionMultiplier;
 	private int[] counter;
 
 	private long linesPrepared;
 
-	public CodeCounter(CheckStyleModel model) {
+	public CodeCounter(
+		CheckStyleModel model,
+		int errorMultiplier,
+		int warningMultiplier,
+		int refactorMultiplier,
+		int conventionMultiplier
+	) {
 		this.model = model;
 
 		setErrorMessages(new ArrayList<>());
 		setWarningMessages(new ArrayList<>());
 		setRefactorMessages(new ArrayList<>());
 		setConventionMessages(new ArrayList<>());
-		multipliers = new int[] { 5, 1, 1, 1 };
-		counter = new int[] { 0, 0, 0, 0 };
-		
-		linesPrepared=0;
-	}
 
-	public CodeCounter(CheckStyleModel model, int[] multipliers) {
-		this.model = model;
-
-		setErrorMessages(new ArrayList<>());
-		setWarningMessages(new ArrayList<>());
-		setRefactorMessages(new ArrayList<>());
-		setConventionMessages(new ArrayList<>());
-		this.multipliers = multipliers;
-		counter = new int[] { 0, 0, 0, 0 };
+		this.errorMultiplier = errorMultiplier;
+		this.warningMultiplier = warningMultiplier;
+		this.refactorMultiplier = refactorMultiplier;
+		this.conventionMultiplier = conventionMultiplier;
 		
-		linesPrepared=0;
+		counter = new int[] { 0, 0, 0, 0 };
+		linesPrepared = 0;
 	}
 
 	public float calculate() {
-		float rating = 0;
-
 		long linesCount = calculateLinesCount();
 		linesPrepared=linesCount;
 		
 		calculateErrorsCount();
 
-		rating = 10 - ((float)(multipliers[0] * counter[0] + multipliers[1] * counter[1] + multipliers[2] * counter[2]
-				+ multipliers[3] * counter[3]) / linesCount) * 10;
+		float totalCritics = (
+			errorMultiplier * counter[0]
+			+ warningMultiplier * counter[1]
+			+ refactorMultiplier * counter[2]
+			+ conventionMultiplier * counter[3]
+		);
+
+		float rating = 10 - (totalCritics / linesCount) * 10;
 		
 		return rating;
 	}
@@ -83,34 +87,36 @@ public class CodeCounter {
 	}
 
 	private void calculateErrorsCount() {
-		if (this.model != null) {
-			for (CheckStyleFileModel file : model.getFiles()) {
-				for (CheckStyleErrorModel error : file.getErrors()) {
-					String message = error.getMessage();
-					boolean c1 = errorMessages.contains(message);
-					boolean c2 = warningMessages.contains(message);
-					boolean c3 = refactorMessages.contains(message);
-					boolean c4 = conventionMessages.contains(message);
+		if (this.model == null) {
+			return;
+		}
+		
+		for (CheckStyleFileModel file : model.getFiles()) {
+			for (CheckStyleErrorModel error : file.getErrors()) {
+				String message = error.getMessage();
+				boolean c1 = errorMessages.contains(message);
+				boolean c2 = warningMessages.contains(message);
+				boolean c3 = refactorMessages.contains(message);
+				boolean c4 = conventionMessages.contains(message);
 
-					if (c1) {
-						counter[0]++;
-					}
+				if (c1) {
+					counter[0]++;
+				}
 
-					if (c2) {
-						counter[1]++;
-					}
+				if (c2) {
+					counter[1]++;
+				}
 
-					if (c3) {
-						counter[2]++;
-					}
+				if (c3) {
+					counter[2]++;
+				}
 
-					if (c4) {
-						counter[3]++;
-					}
+				if (c4) {
+					counter[3]++;
+				}
 
-					if (!c1 && !c2 && !c3 && !c4) {
-						counter[0]++;
-					}
+				if (!c1 && !c2 && !c3 && !c4) {
+					counter[0]++;
 				}
 			}
 		}
@@ -134,10 +140,6 @@ public class CodeCounter {
 	
 	public void setCounter(int[] counter) {
 		this.counter = counter;
-	}
-	
-	public int[] getMultipliers() {
-		return multipliers;
 	}
 	
 	public int[] getCounter() {

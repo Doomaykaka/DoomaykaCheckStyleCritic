@@ -9,17 +9,17 @@ import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "file")
-@XmlAccessorType (XmlAccessType.FIELD)
+@XmlAccessorType(XmlAccessType.FIELD)
 public class CheckStyleFileModel {
-	@XmlAttribute(name="name")
+	@XmlAttribute(name = "name")
 	private String fileName;
-	@XmlElement(name="error")
+	@XmlElement(name = "error")
 	private List<CheckStyleErrorModel> errors = null;
-	
+
 	public String getFileName() {
 		return fileName;
 	}
-	
+
 	public List<CheckStyleErrorModel> getErrors() {
 		return errors;
 	}

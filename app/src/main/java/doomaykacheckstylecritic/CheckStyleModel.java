@@ -9,11 +9,11 @@ import java.util.List;
 import jakarta.xml.bind.annotation.XmlAccessType;
 
 @XmlRootElement(name = "checkstyle")
-@XmlAccessorType (XmlAccessType.FIELD)
+@XmlAccessorType(XmlAccessType.FIELD)
 public class CheckStyleModel {
-	@XmlElement(name="file")
+	@XmlElement(name = "file")
 	private List<CheckStyleFileModel> files = null;
-	
+
 	public List<CheckStyleFileModel> getFiles() {
 		return files;
 	}
