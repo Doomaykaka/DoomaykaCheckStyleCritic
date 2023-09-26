@@ -50,8 +50,7 @@ public class ConfigReader {
 			path = path + separator + "properties.conf";
 
 		} catch (URISyntaxException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println("Root path error");
 		}
 	}
 
@@ -72,9 +71,9 @@ public class ConfigReader {
 				}
 				scanner.close();
 			} catch (FileNotFoundException e) {
-				e.printStackTrace();
+				System.out.println("Config file not parsed");
 			} catch (IOException e) {
-				e.printStackTrace();
+				System.out.println("Config file not parsed");
 			}
 		}
 

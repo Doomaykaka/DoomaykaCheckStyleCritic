@@ -50,7 +50,7 @@ public class CheckStyleParser {
 			fsSeparator = separator;
 
 		} catch (URISyntaxException e) {
-			e.printStackTrace();
+			System.out.println("Work directory not parsed");
 		}
 
 		rootFilesPathStrings = new ArrayList<String>();
@@ -118,7 +118,7 @@ public class CheckStyleParser {
 				}
 				scanner.close();
 			} catch (FileNotFoundException e) {
-				e.printStackTrace();
+				System.out.println("XML file reading error");
 			}
 		}
 	}
@@ -136,7 +136,7 @@ public class CheckStyleParser {
 				CheckStyleModel checkStyleReport = (CheckStyleModel) unmarshaller.unmarshal(fis);
 				this.data = checkStyleReport;
 			} catch (JAXBException e) {
-				e.printStackTrace();
+				System.out.println("XML file not parsed");
 			}
 		}
 	}
