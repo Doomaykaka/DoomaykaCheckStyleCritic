@@ -14,6 +14,7 @@ public class CodeCounter {
 	private List<String> conventionMessages;
 	private int[] multipliers;
 	private int[] counter;
+
 	private long linesPrepared;
 
 	public CodeCounter(CheckStyleModel model) {
@@ -129,6 +130,10 @@ public class CodeCounter {
 
 	public void setConventionMessages(List<String> conventionMessages) {
 		this.conventionMessages = conventionMessages;
+	}
+	
+	public void setCounter(int[] counter) {
+		this.counter = counter;
 	}
 	
 	public int[] getMultipliers() {
