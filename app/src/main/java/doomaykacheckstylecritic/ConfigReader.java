@@ -1,27 +1,28 @@
 package doomaykacheckstylecritic;
 
-import java.awt.geom.IllegalPathStateException;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.StringReader;
-import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
-import java.util.Scanner;
 
 public class ConfigReader {
     public final static String PROPERTIE_NAME_ERROR_MULTIPLIER = "error-multiplier";
     public final static String PROPERTIE_NAME_WARNING_MULTIPLIER = "warning-multiplier";
     public final static String PROPERTIE_NAME_REFACTOR_MULTIPLIER = "refactor-multiplier";
     public final static String PROPERTIE_NAME_CONVENTION_MULTIPLIER = "convention-multiplier";
+    public final static String PROPERTIE_NAME_XML_PATH = "xml-path";
+    public final static String PROPERTIE_NAME_XML_NAME = "xml-name";
+    public final static String PROPERTIE_NAME_ERROR_MESSAGES = "error-messages";
+    public final static String PROPERTIE_NAME_WARNING_MESSAGES = "warning-messages";
+    public final static String PROPERTIE_NAME_REFACTOR_MESSAGES = "refactor-messages";
+    public final static String PROPERTIE_NAME_CONVENTION_MESSAGES = "convention-messages";
+    public final static String PROPERTIE_NAME_MESSAGES = "messages";
 
     private String path;
 
@@ -78,7 +79,6 @@ public class ConfigReader {
         if (!path.equals("")) {
             try {
                 Path filePath = Paths.get(path);
-                // List<String> lines = Files.readAllLines(filePath, StandardCharsets.UTF_8);
                 List<String> lines = Files.readAllLines(filePath);
                 for (String line : lines) {
                     prop.load(new StringReader(line));
@@ -90,37 +90,37 @@ public class ConfigReader {
             }
         }
 
-        if (prop.getProperty("xml-path") != null) {
-            XMLpath = prop.getProperty("xml-path");
+        if (prop.getProperty(PROPERTIE_NAME_XML_PATH) != null) {
+            XMLpath = prop.getProperty(PROPERTIE_NAME_XML_PATH);
         }
 
-        if (prop.getProperty("xml-name") != null) {
-            XMLname = prop.getProperty("xml-name");
+        if (prop.getProperty(PROPERTIE_NAME_XML_NAME) != null) {
+            XMLname = prop.getProperty(PROPERTIE_NAME_XML_NAME);
         }
 
-        if (prop.getProperty("error-messages") != null) {
-            String errorMessagesInline = prop.getProperty("error-messages");
+        if (prop.getProperty(PROPERTIE_NAME_ERROR_MESSAGES) != null) {
+            String errorMessagesInline = prop.getProperty(PROPERTIE_NAME_ERROR_MESSAGES);
             if (errorMessagesInline.split(";") != null) {
                 errorMessages = Arrays.asList(errorMessagesInline.split(";"));
             }
         }
 
-        if (prop.getProperty("warning-messages") != null) {
-            String warningMessagesInline = prop.getProperty("warning-messages");
+        if (prop.getProperty(PROPERTIE_NAME_WARNING_MESSAGES) != null) {
+            String warningMessagesInline = prop.getProperty(PROPERTIE_NAME_WARNING_MESSAGES);
             if (warningMessagesInline.split(";") != null) {
                 warningMessages = Arrays.asList(warningMessagesInline.split(";"));
             }
         }
 
-        if (prop.getProperty("refactor-messages") != null) {
-            String refactorMessagesInline = prop.getProperty("refactor-messages");
+        if (prop.getProperty(PROPERTIE_NAME_REFACTOR_MESSAGES) != null) {
+            String refactorMessagesInline = prop.getProperty(PROPERTIE_NAME_REFACTOR_MESSAGES);
             if (refactorMessagesInline.split(";") != null) {
                 refactorMessages = Arrays.asList(refactorMessagesInline.split(";"));
             }
         }
 
-        if (prop.getProperty("convention-messages") != null) {
-            String conventionMessagesInline = prop.getProperty("convention-messages");
+        if (prop.getProperty(PROPERTIE_NAME_CONVENTION_MESSAGES) != null) {
+            String conventionMessagesInline = prop.getProperty(PROPERTIE_NAME_CONVENTION_MESSAGES);
             if (conventionMessagesInline.split(";") != null) {
                 conventionMessages = Arrays.asList(conventionMessagesInline.split(";"));
             }
@@ -131,8 +131,8 @@ public class ConfigReader {
         this.refactorMultiplier = getIntProperty(prop, ConfigReader.PROPERTIE_NAME_REFACTOR_MULTIPLIER, 1);
         this.conventionMultiplier = getIntProperty(prop, ConfigReader.PROPERTIE_NAME_CONVENTION_MULTIPLIER, 1);
 
-        if (prop.getProperty("messages") != null) {
-            String messagesInline = prop.getProperty("messages");
+        if (prop.getProperty(PROPERTIE_NAME_MESSAGES) != null) {
+            String messagesInline = prop.getProperty(PROPERTIE_NAME_MESSAGES);
             if (messagesInline.split(";") != null) {
                 messages = messagesInline.split(";");
             }

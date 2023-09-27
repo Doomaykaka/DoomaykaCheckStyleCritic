@@ -1,12 +1,5 @@
 package doomaykacheckstylecritic;
 
-import java.io.PrintStream;
-import java.io.FileDescriptor;
-import java.io.FileOutputStream;
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-
 public class MessageGenerator {
     private String[] messages;
     private long linesCount; // %lc

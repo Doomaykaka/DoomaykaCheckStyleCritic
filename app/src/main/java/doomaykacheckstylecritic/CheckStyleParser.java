@@ -68,18 +68,27 @@ public class CheckStyleParser {
     }
 
     public void readXML() {
-        if (XMLpath.equals("")) {
-            File rootDir = new File(checkRootPath);
-            String[] files = rootDir.list();
+        try {
+            if (XMLpath.equals("")) {
+                File rootDir = new File(checkRootPath);
+                String[] files = rootDir.list();
 
-            buildPathsRecursive(files, checkRootPath);
+                buildPathsRecursive(files, checkRootPath);
 
-            XMLpath = rootFilesPathStrings.get(0);
+                if (rootFilesPathStrings.size() == 0) {
+                    throw new FileNotFoundException("XML not founded");
+                }
+
+                XMLpath = rootFilesPathStrings.get(0);
+            }
+
+            readXMLFile(XMLpath);
+
+            parseXMLFile(XMLString);
+        } catch (FileNotFoundException e) {
+            System.out.println(e.getMessage());
+            System.exit(0);
         }
-
-        readXMLFile(XMLpath);
-
-        parseXMLFile(XMLString);
     }
 
     private void buildPathsRecursive(String[] files, String rootPath) {

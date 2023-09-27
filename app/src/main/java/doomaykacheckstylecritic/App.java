@@ -1,6 +1,5 @@
 package doomaykacheckstylecritic;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class App {
