@@ -8,10 +8,10 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name = "error")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class CheckStyleErrorModel {
-	@XmlAttribute(name = "message")
-	private String message;
+    @XmlAttribute(name = "message")
+    private String message;
 
-	public String getMessage() {
-		return message;
-	}
+    public String getMessage() {
+        return message;
+    }
 }

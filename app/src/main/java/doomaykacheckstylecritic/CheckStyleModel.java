@@ -11,10 +11,10 @@ import jakarta.xml.bind.annotation.XmlAccessType;
 @XmlRootElement(name = "checkstyle")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class CheckStyleModel {
-	@XmlElement(name = "file")
-	private List<CheckStyleFileModel> files = null;
+    @XmlElement(name = "file")
+    private List<CheckStyleFileModel> files = null;
 
-	public List<CheckStyleFileModel> getFiles() {
-		return files;
-	}
+    public List<CheckStyleFileModel> getFiles() {
+        return files;
+    }
 }
