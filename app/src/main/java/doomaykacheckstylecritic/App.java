@@ -3,20 +3,8 @@ package doomaykacheckstylecritic;
 import java.util.List;
 
 public class App {
-    public static void main(String[] args) {
-        // file options
-        // path
-        // xml name
-
-        // parse options
-        // errorMessages
-        // warningMessages
-        // refactorMessages
-        // conventionMessages
-        // multipliers(error,warning,refactor,convention)
-
-        // message options
-
+    public static void main(String[] args) {   
+        // Config path using
         ConfigReader cr;
         if (args.length > 0) {
             if ((args[0] != null) && (args[0].length() > 0)) {
@@ -30,20 +18,21 @@ public class App {
 
         cr.readConfig();
 
-        String XMLpath = cr.getXMLpath(); // ++ Path to XML
-        String XMLname = cr.getXMLname(); // ++ XML filename
+        String XMLpath = cr.getXMLpath();
+        String XMLname = cr.getXMLname();
 
-        List<String> errorMessages = cr.getErrorMessages(); // errorMessages to check ++
-        List<String> warningMessages = cr.getWarningMessages(); // warningMessages to check ++
-        List<String> refactorMessages = cr.getRefactorMessages(); // refactorMessages to check ++
-        List<String> conventionMessages = cr.getConventionMessages(); // convertationMessages to check ++
+        List<String> errorMessages = cr.getErrorMessages();
+        List<String> warningMessages = cr.getWarningMessages();
+        List<String> refactorMessages = cr.getRefactorMessages();
+        List<String> conventionMessages = cr.getConventionMessages();
 
         int errorMultiplier = cr.getErrorMultiplier();
         int warningMultiplier = cr.getWarningMultiplier();
         int refactorMultiplier = cr.getRefactorMultiplier();
         int conventionMultiplier = cr.getConventionMultiplier();
-
-        String[] messages = cr.getMessages(); // messages to print++
+        
+        // Console messages
+        String[] messages = cr.getMessages();
 
         CheckStyleParser csp;
 
@@ -60,8 +49,13 @@ public class App {
         csp.readXML();
         CheckStyleModel model = csp.getXmlUnparsed();
 
-        CodeCounter counter = new CodeCounter(model, errorMultiplier, warningMultiplier, refactorMultiplier,
-                conventionMultiplier);
+        CodeCounter counter = new CodeCounter(
+                                  model, 
+                                  errorMultiplier, 
+                                  warningMultiplier, 
+                                  refactorMultiplier,
+                                  conventionMultiplier
+                                  );
 
         if (errorMessages != null) {
             counter.setErrorMessages(errorMessages);
@@ -82,8 +76,19 @@ public class App {
         float rating = 0;
         rating = counter.calculate();
 
-        MessageGenerator mGenerator = new MessageGenerator(rating, counter.getLinesPrepared(), errorMultiplier,
-                warningMultiplier, refactorMultiplier, conventionMultiplier, counter.getCounter(), messages);
+        MessageGenerator mGenerator = new MessageGenerator(
+                                          rating, 
+                                          counter.getLinesPrepared(), 
+                                          errorMultiplier,
+                                          warningMultiplier, 
+                                          refactorMultiplier, 
+                                          conventionMultiplier, 
+                                          counter.getErrorsCounter(),
+                                          counter.getWarningsCounter(),
+                                          counter.getRefactorsCounter(),
+                                          counter.getConventionsCounter(),
+                                          messages
+                                          );
         mGenerator.printMessages();
     }
 }

@@ -16,8 +16,10 @@ public class CodeCounter {
     private int warningMultiplier;
     private int refactorMultiplier;
     private int conventionMultiplier;
-    private int[] counter;
-
+    private int errorsCounter;
+    private int warningsCounter;
+    private int refactorsCounter;
+    private int conventionsCounter;
     private long linesPrepared;
 
     public CodeCounter(CheckStyleModel model, int errorMultiplier, int warningMultiplier, int refactorMultiplier,
@@ -33,8 +35,12 @@ public class CodeCounter {
         this.warningMultiplier = warningMultiplier;
         this.refactorMultiplier = refactorMultiplier;
         this.conventionMultiplier = conventionMultiplier;
-
-        counter = new int[] { 0, 0, 0, 0 };
+        
+        errorsCounter = 0;
+        warningsCounter = 0;
+        refactorsCounter = 0;
+        conventionsCounter = 0;
+        
         linesPrepared = 0;
     }
 
@@ -44,8 +50,8 @@ public class CodeCounter {
 
         calculateErrorsCount();
 
-        float totalCritics = (errorMultiplier * counter[0] + warningMultiplier * counter[1]
-                + refactorMultiplier * counter[2] + conventionMultiplier * counter[3]);
+        float totalCritics = (errorMultiplier * errorsCounter + warningMultiplier * warningsCounter
+                + refactorMultiplier * refactorsCounter + conventionMultiplier * conventionsCounter);
 
         float rating = 10 - (totalCritics / linesCount) * 10;
 
@@ -85,29 +91,34 @@ public class CodeCounter {
         for (CheckStyleFileModel file : model.getFiles()) {
             for (CheckStyleErrorModel error : file.getErrors()) {
                 String message = error.getMessage();
-                boolean c1 = errorMessages.contains(message);
-                boolean c2 = warningMessages.contains(message);
-                boolean c3 = refactorMessages.contains(message);
-                boolean c4 = conventionMessages.contains(message);
+                boolean containsErrors = errorMessages.contains(message);
+                boolean containsWarnings = warningMessages.contains(message);
+                boolean containsRefactors = refactorMessages.contains(message);
+                boolean containsConvention = conventionMessages.contains(message);
 
-                if (c1) {
-                    counter[0]++;
+                if (containsErrors) {
+                    conventionsCounter++;
                 }
 
-                if (c2) {
-                    counter[1]++;
+                if (containsWarnings) {
+                    warningsCounter++;
                 }
 
-                if (c3) {
-                    counter[2]++;
+                if (containsRefactors) {
+                    refactorsCounter++;
                 }
 
-                if (c4) {
-                    counter[3]++;
+                if (containsConvention) {
+                    conventionsCounter++;
                 }
 
-                if (!c1 && !c2 && !c3 && !c4) {
-                    counter[0]++;
+                if (
+                   !containsErrors 
+                   && !containsWarnings 
+                   && !containsRefactors 
+                   && !containsConvention
+                   ) {
+                    conventionsCounter++;
                 }
             }
         }
@@ -128,13 +139,37 @@ public class CodeCounter {
     public void setConventionMessages(List<String> conventionMessages) {
         this.conventionMessages = conventionMessages;
     }
-
-    public void setCounter(int[] counter) {
-        this.counter = counter;
+    
+    public int getErrorsCounter() {
+        return errorsCounter;
     }
 
-    public int[] getCounter() {
-        return counter;
+    public void setErrorsCounter(int errorsCounter) {
+        this.errorsCounter = errorsCounter;
+    }
+    
+    public int getWarningsCounter() {
+        return warningsCounter;
+    }
+
+    public void setWarningsCounter(int warningsCounter) {
+        this.warningsCounter = warningsCounter;
+    }
+    
+    public int getRefactorsCounter() {
+        return refactorsCounter;
+    }
+
+    public void setRefactorsCounter(int refactorsCounter) {
+        this.refactorsCounter = refactorsCounter;
+    }
+    
+    public int getConventionsCounter() {
+        return conventionsCounter;
+    }
+
+    public void setConventionsCounter(int conventionsCounter) {
+        this.conventionsCounter = conventionsCounter;
     }
 
     public long getLinesPrepared() {

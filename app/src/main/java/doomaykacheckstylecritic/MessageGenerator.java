@@ -3,18 +3,31 @@ package doomaykacheckstylecritic;
 public class MessageGenerator {
     private String[] messages;
     private long linesCount; // %lc
-    private int errorMultiplier;
-    private int warningMultiplier;
-    private int refactorMultiplier;
-    private int conventionMultiplier; // %mp+index
-    private int[] counter; // %ct+index
+    private int errorMultiplier; // %emp
+    private int warningMultiplier; // %wmp
+    private int refactorMultiplier; // %rmp
+    private int conventionMultiplier; // %cmp
+    private int errorsCounter; // %ect
+    private int warningsCounter; // %wct
+    private int refactorsCounter; // %rct
+    private int conventionsCounter; // %cct
     private float rating; // %r
 
-    MessageGenerator(float rating, long linesCount, int errorMultiplier, int warningMultiplier, int refactorMultiplier,
-            int conventionMultiplier, int[] counter, String[] messages) {
+    MessageGenerator(
+                    float rating, 
+                    long linesCount, 
+                    int errorMultiplier, 
+                    int warningMultiplier, 
+                    int refactorMultiplier,
+                    int conventionMultiplier, 
+                    int errorsCounter, 
+                    int warningsCounter, 
+                    int refactorsCounter, 
+                    int conventionsCounter, 
+                    String[] messages) {
         if (messages == null) {
             messages = new String[] { "\\\\Doomayka CheckStyle critic//", "Lines prepared: %lc",
-                    "By expression: 10-((%mp0*%ct0+%mp1*%ct1+%mp2*%ct2+%mp3*%ct3)/%lc)*10", "Result: %r" };
+                    "By expression: 10-((%emp*%ect+%wmp*%wct+%rmp*%rct+%cmp*%cct)/%lc)*10", "Result: %r" };
         }
 
         this.messages = messages;
@@ -25,23 +38,23 @@ public class MessageGenerator {
         this.warningMultiplier = warningMultiplier;
         this.refactorMultiplier = refactorMultiplier;
         this.conventionMultiplier = conventionMultiplier;
-        this.counter = counter;
+        this.errorsCounter = errorsCounter;
+        this.warningsCounter = warningsCounter;
+        this.refactorsCounter = refactorsCounter;
+        this.conventionsCounter = conventionsCounter; // %cct
     }
 
     public void printMessages() {
-        // System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out), true,
-        // StandardCharsets.UTF_8));
-
         for (int i = 0; i < messages.length; i++) {
             messages[i] = messages[i].replace("%lc", Long.toString(linesCount));
-            messages[i] = messages[i].replace("%mp0", Integer.toString(errorMultiplier));
-            messages[i] = messages[i].replace("%mp1", Integer.toString(warningMultiplier));
-            messages[i] = messages[i].replace("%mp2", Integer.toString(refactorMultiplier));
-            messages[i] = messages[i].replace("%mp3", Integer.toString(conventionMultiplier));
-            messages[i] = messages[i].replace("%ct0", Integer.toString(counter[0]));
-            messages[i] = messages[i].replace("%ct1", Integer.toString(counter[1]));
-            messages[i] = messages[i].replace("%ct2", Integer.toString(counter[2]));
-            messages[i] = messages[i].replace("%ct3", Integer.toString(counter[3]));
+            messages[i] = messages[i].replace("%emp", Integer.toString(errorMultiplier));
+            messages[i] = messages[i].replace("%wmp", Integer.toString(warningMultiplier));
+            messages[i] = messages[i].replace("%rmp", Integer.toString(refactorMultiplier));
+            messages[i] = messages[i].replace("%cmp", Integer.toString(conventionMultiplier));
+            messages[i] = messages[i].replace("%ect", Integer.toString(errorsCounter));
+            messages[i] = messages[i].replace("%wct", Integer.toString(warningsCounter));
+            messages[i] = messages[i].replace("%rct", Integer.toString(refactorsCounter));
+            messages[i] = messages[i].replace("%cct", Integer.toString(conventionsCounter));
             messages[i] = messages[i].replace("%r", Float.toString(rating));
 
             System.out.println(messages[i]);
