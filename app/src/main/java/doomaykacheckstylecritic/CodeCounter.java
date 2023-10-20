@@ -97,7 +97,7 @@ public class CodeCounter {
                 boolean containsConvention = conventionMessages.contains(message);
 
                 if (containsErrors) {
-                    conventionsCounter++;
+                    errorsCounter++;
                 }
 
                 if (containsWarnings) {
